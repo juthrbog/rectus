@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Rectus
+GenericName=Issue Tracker
+Comment=Unofficial desktop app for Linear
+Exec=rectus %U
+Icon=io.github.juthrbog.Rectus
+Terminal=false
+Categories=Office;ProjectManagement;
+Keywords=linear;issues;tracker;
+MimeType=x-scheme-handler/linear;
+StartupWMClass=io.github.juthrbog.Rectus
+StartupNotify=true

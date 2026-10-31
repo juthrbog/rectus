@@ -1,0 +1,26 @@
+{
+  "name": "rectus",
+  "productName": "Rectus",
+  "version": "0.1.0",
+  "description": "Unofficial Linux desktop wrapper for linear.app",
+  "desktopName": "io.github.juthrbog.Rectus.desktop",
+  "type": "module",
+  "main": "src/main.js",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.js",
+    "selftest": "electron . --self-test",
+    "icons": "bash scripts/icons.sh",
+    "pack": "bash scripts/pack.sh"
+  },
+  "devDependencies": {
+    "electron": "44.10.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juthrbog/rectus.git"
+  },
+  "homepage": "https://github.com/juthrbog/rectus"
+}

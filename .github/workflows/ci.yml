@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # The job runs on Arch Linux, the only system that Rectus supports.
+  ci:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - name: Install tools
+        run: |
+          pacman -Syu --noconfirm --needed git nodejs npm shellcheck namcap \
+            desktop-file-utils xorg-server-xvfb
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check the version
+        run: scripts/check-version.sh
+
+      - name: Check the JavaScript syntax
+        run: for f in src/*.js test/*.js; do node --check "$f"; done
+
+      - name: Test
+        run: node --test test/*.test.js
+
+      - name: Check the shell scripts
+        run: shellcheck packaging/rectus.sh scripts/*.sh
+
+      - name: Check the desktop file
+        run: desktop-file-validate packaging/io.github.juthrbog.Rectus.desktop
+
+      # Builds the package from the commit, checks it with namcap, installs
+      # it with electron44 and runs "rectus --self-test".
+      - name: Build, install and run the package
+        run: |
+          git config --global --add safe.directory "$PWD"
+          scripts/ci-package.sh HEAD "$(node -p 'require("./package.json").version')" dist

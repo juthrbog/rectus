@@ -1,0 +1,50 @@
+# Maintainer: juthrbog <juthrbog@hey.com>
+pkgname=rectus
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Unofficial Linear desktop app for Arch Linux (not affiliated with Linear Orbit, Inc.)"
+arch=('any')
+url="https://github.com/juthrbog/rectus"
+license=('MIT')
+depends=('electron44' 'libnotify' 'xdg-utils' 'hicolor-icon-theme' 'bash')
+optdepends=(
+  'xdg-desktop-portal: file pickers and screen sharing on Wayland'
+  'pipewire: screen sharing on Wayland'
+)
+checkdepends=('nodejs')
+options=('!strip' '!debug')
+# The release workflow writes the AUR copy of this file with the real
+# checksum (scripts/aur.sh). For a local build, run `npm run pack` first: it
+# writes the tarball next to this file, and makepkg does not download it.
+source=("$url/releases/download/v$pkgver/$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+_srcdir() { echo "$srcdir/rectus-$pkgver"; }
+
+check() {
+  cd "$(_srcdir)"
+  node --test test/*.test.js
+}
+
+package() {
+  cd "$(_srcdir)"
+  local app="$pkgdir/usr/share/$pkgname/app"
+
+  install -Dm644 package.json "$app/package.json"
+  install -Dm644 -t "$app/src" src/*.js
+  install -Dm644 -t "$app/assets" assets/icon.png assets/tray.png assets/tray-unread.png
+
+  install -Dm755 packaging/rectus.sh "$pkgdir/usr/bin/rectus"
+  install -Dm644 packaging/io.github.juthrbog.Rectus.desktop \
+    "$pkgdir/usr/share/applications/io.github.juthrbog.Rectus.desktop"
+
+  local s
+  for s in 16 32 48 64 128 256 512; do
+    install -Dm644 "assets/icons/$s.png" \
+      "$pkgdir/usr/share/icons/hicolor/${s}x${s}/apps/io.github.juthrbog.Rectus.png"
+  done
+  install -Dm644 assets/icon.svg \
+    "$pkgdir/usr/share/icons/hicolor/scalable/apps/io.github.juthrbog.Rectus.svg"
+
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}
