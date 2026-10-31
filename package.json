@@ -16,7 +16,7 @@
     "pack": "bash scripts/pack.sh"
   },
   "devDependencies": {
-    "electron": "44.10.1"
+    "electron": "45.1.0"
   },
   "repository": {
     "type": "git",
