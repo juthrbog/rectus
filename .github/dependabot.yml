@@ -4,6 +4,12 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # The package runs on the electron44 package of Arch Linux. The dev
+      # Electron must have the same major version. Change both together:
+      # package.json, packaging/PKGBUILD and packaging/rectus.sh.
+      - dependency-name: electron
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /
